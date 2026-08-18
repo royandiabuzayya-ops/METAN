@@ -1,6 +1,6 @@
 // Catatan Tani - Service Worker
 // Cache-first for app shell so the app works fully offline in the field.
-const CACHE_VERSION = 'catatan-tani-v2';
+const CACHE_VERSION = 'catatan-tani-v4';
 const APP_SHELL = [
   './',
   './index.html',

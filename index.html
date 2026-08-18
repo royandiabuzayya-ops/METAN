@@ -115,6 +115,7 @@ a{ color:inherit; }
   background:rgba(255,255,255,0.08); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
 }
 .icon-btn svg{ width:18px; height:18px; }
+.bell-badge{ position:absolute; top:-4px; right:-4px; min-width:16px; height:16px; padding:0 3px; border-radius:8px; background:var(--terracotta); color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid var(--forest); }
 .page-title-row{ margin-top:14px; display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
 .page-title-row h2{ color:#fff; font-size:24px; }
 .page-sub{ color:#cfe0d3; font-size:12.5px; margin-top:2px; }
@@ -268,7 +269,7 @@ a{ color:inherit; }
 .detail-stat .v{ font-family:var(--font-display); font-size:16.5px; font-weight:600; margin-top:3px; font-variant-numeric:tabular-nums; }
 
 .subtabs{ display:flex; gap:6px; margin:16px 0 12px; background:var(--paper-2); padding:4px; border-radius:12px; }
-.subtab{ flex:1; text-align:center; padding:8px 4px; border-radius:9px; font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; }
+.subtab{ flex:1 0 auto; min-width:64px; text-align:center; padding:8px 6px; border-radius:9px; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer; white-space:nowrap; }
 .subtab.active{ background:var(--card); color:var(--forest-3); box-shadow:var(--shadow-sm); }
 
 .pill-row{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
@@ -299,6 +300,46 @@ table.datatable tr:last-child td{ border-bottom:none; }
 .swipe-actions{ display:flex; gap:8px; margin-top:2px; }
 
 @media (min-width:420px){ .kpi-grid{ grid-template-columns:repeat(4,1fr);} }
+
+/* ---- Rencana Kegiatan (planned tasks) ---- */
+.plan-item{ display:flex; align-items:center; gap:12px; padding:13px 14px; border-radius:14px; background:var(--card); border:1px solid var(--line); margin-bottom:9px; }
+.plan-item.due{ border-color:var(--terracotta); background:linear-gradient(120deg,#fff6ee,#fffdf7); }
+.plan-due-badge{ font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:7px; }
+.plan-due-badge.overdue{ background:var(--bad-bg); color:var(--bad); }
+.plan-due-badge.today{ background:var(--terracotta); color:#fff; }
+.plan-due-badge.upcoming{ background:var(--paper-2); color:var(--ink-soft); }
+.plan-due-badge.done{ background:var(--good-bg); color:var(--good); }
+.mini-btn{ width:34px; height:34px; border-radius:10px; border:1.5px solid var(--good); background:var(--good-bg); color:var(--good); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; }
+.mini-btn svg{ width:16px; height:16px; }
+
+/* ---- Diagnosa Tanaman ---- */
+.foto-preview{ width:100%; max-height:220px; object-fit:cover; border-radius:12px; margin-bottom:10px; border:1px solid var(--line-strong); }
+.kb-card{ background:var(--card-soft); border:1px solid var(--line-strong); border-radius:13px; padding:12px; margin-bottom:9px; }
+.kb-card h4{ font-size:13px; color:var(--forest-3); margin-bottom:4px; }
+.kb-card p{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:0; }
+.ai-card{ background:linear-gradient(135deg,#f3f0ff,#fdeee0); border:1px solid #ded6f5; border-radius:13px; padding:14px; margin-top:10px; }
+.ai-card h4{ font-size:13px; color:#4a3aa7; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.ai-card p{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0; white-space:pre-wrap; }
+
+/* ---- Print (Analisis) ---- */
+.print-header{ display:none; }
+@media print{
+  body{ background:#fff !important; }
+  .topbar, .tabbar, .fab, .overlay, .toast-wrap, .no-print{ display:none !important; }
+  #app{ max-width:100%; }
+  .views{ padding:0; }
+  .print-header{ display:block; margin-bottom:18px; }
+  .print-header h1{ font-size:22px; color:#000; }
+  .print-header .meta{ font-size:12px; color:#444; margin-top:4px; }
+  .card, .viz-card, .table-scroll{ box-shadow:none !important; border:1px solid #ccc !important; break-inside:avoid; }
+  .kpi{ break-inside:avoid; box-shadow:none !important; border:1px solid #ccc !important; }
+  .section-title{ break-after:avoid; }
+  .table-scroll{ overflow-x:visible !important; }
+  .table-scroll table.datatable{ min-width:0 !important; width:100%; font-size:8.5px; }
+  table.datatable th, table.datatable td{ padding:4px 3px; white-space:nowrap; }
+  table.datatable td:nth-child(2){ white-space:normal; }
+  .chip{ padding:2px 6px; font-size:8.5px; white-space:nowrap; }
+}
 </style>
 </head>
 <body>
@@ -318,6 +359,10 @@ table.datatable tr:last-child td{ border-bottom:none; }
         </div>
       </div>
       <div class="topbar-actions">
+        <button class="icon-btn" id="bellBtn" style="position:relative;" title="Rencana &amp; pengingat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16v-5a6 6 0 10-12 0v5l-2 3h16z"/><path d="M9.5 20.5a2.5 2.5 0 005 0"/></svg>
+          <span id="bellBadge" class="bell-badge" style="display:none;">0</span>
+        </button>
         <button class="icon-btn" id="installBtn" style="display:none" title="Instal aplikasi">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -477,6 +522,38 @@ const KATEGORI_CATATAN = {
 };
 const SATUAN_HASIL = ['kg','kuintal','ton','karung','ikat','lainnya'];
 const KG_EQUIV = { kg:1, kuintal:100, ton:1000 };
+const KATEGORI_DIAGNOSA = { hama:'Hama', penyakit:'Penyakit', hara:'Defisiensi Hara', cuaca:'Cuaca / Lingkungan', lainnya:'Lainnya' };
+const RECURRENCE_PRESETS = [
+  { value:'sekali', label:'Sekali (tanggal tertentu)' },
+  { value:'3', label:'Tiap 3 hari' },
+  { value:'7', label:'Tiap 7 hari (mingguan)' },
+  { value:'14', label:'Tiap 14 hari' },
+  { value:'30', label:'Tiap 30 hari (bulanan)' },
+  { value:'custom', label:'Custom (hari lain)' }
+];
+// Basis pengetahuan offline (gejala umum -> kemungkinan penyebab & solusi). Selalu tersedia
+// tanpa internet; jadi dasar sebelum (opsional) bertanya ke AI dengan foto.
+const KB_DIAGNOSA = [
+  { judul:'Kemungkinan Kutu Daun / Aphid', kata:['kutu','keriting','kerdil','daun menggulung','lengket','madu'], solusi:'Semprot larutan sabun insektisida atau air+sabun cuci piring encer ke bagian bawah daun. Bisa juga pakai insektisida nabati (ekstrak daun mimba/nimba). Buang bagian yang terserang parah. Cek dan ulangi tiap 3-4 hari sampai populasi turun.' },
+  { judul:'Kemungkinan Ulat / Larva Pemakan Daun', kata:['ulat','daun berlubang','daun habis','digigit','larva'], solusi:'Ambil dan musnahkan ulat secara manual bila jumlah sedikit. Untuk serangan luas, gunakan insektisida biologis Bacillus thuringiensis (Bt) atau insektisida nabati. Semprot sore hari agar lebih efektif dan tidak membunuh serangga penyerbuk.' },
+  { judul:'Kemungkinan Wereng / Hama Penghisap Batang Padi', kata:['wereng','padi kering mendadak','hopperburn','batang kuning'], solusi:'Kurangi pemupukan nitrogen berlebih. Gunakan insektisida sistemik sesuai anjuran/PPL setempat. Jaga jarak tanam tidak terlalu rapat agar sirkulasi udara baik dan wereng tidak mudah berkembang biak.' },
+  { judul:'Kemungkinan Penyakit Layu (Fusarium/Bakteri)', kata:['layu','busuk batang','busuk pangkal','tiba-tiba layu','akar busuk'], solusi:'Cabut dan musnahkan (bakar/kubur jauh) tanaman yang layu agar tidak menular. Perbaiki drainase agar tidak tergenang. Jangan tanam komoditas sejenis di lahan yang sama musim depan (rotasi tanaman). Pertimbangkan fungisida/bakterisida sesuai anjuran toko pertanian setempat.' },
+  { judul:'Kemungkinan Bercak Daun / Antraknosa / Blas', kata:['bercak','bercak coklat','bercak daun','daun berbintik','jamur daun'], solusi:'Kurangi kelembapan berlebih (atur jarak tanam, jangan siram daun langsung di sore hari). Buang daun yang terserang. Semprot fungisida berbahan aktif sesuai anjuran bila serangan meluas. Hindari pemupukan nitrogen berlebihan.' },
+  { judul:'Kemungkinan Defisiensi Nitrogen (N)', kata:['kuning','menguning','daun tua kuning','pertumbuhan lambat','kerdil kuning'], solusi:'Daun tua menguning merata biasanya tanda kekurangan Nitrogen. Tambahkan pupuk Urea atau pupuk kandang/kompos secara bertahap. Jangan berlebihan agar tidak memicu hama/penyakit.' },
+  { judul:'Kemungkinan Defisiensi Kalium (K)', kata:['tepi daun coklat','tepi daun kuning','daun terbakar','ujung daun kering'], solusi:'Gejala tepi/ujung daun menguning lalu coklat kering biasanya tanda kekurangan Kalium. Tambahkan pupuk KCl atau NPK dengan kandungan K lebih tinggi. Pastikan drainase baik karena K mudah tercuci di tanah becek.' },
+  { judul:'Kemungkinan Defisiensi Fosfor (P)', kata:['keunguan','ungu','pertumbuhan kerdil','akar tidak berkembang'], solusi:'Daun kemerahan/keunguan dengan pertumbuhan kerdil sering tanda kekurangan Fosfor, umum di tanah asam/dingin. Tambahkan pupuk SP-36 atau TSP. Pengapuran (dolomit) bisa membantu bila tanah terlalu asam.' },
+  { judul:'Kemungkinan Kekurangan Air / Kekeringan', kata:['layu siang','layu siang hari','kering','tanah retak','daun menggulung siang'], solusi:'Jika tanaman layu di siang hari tapi segar kembali di pagi/malam, biasanya butuh pengairan lebih rutin. Tambah frekuensi penyiraman terutama di musim kemarau, dan pertimbangkan mulsa untuk menahan kelembapan tanah.' },
+  { judul:'Kemungkinan Kelebihan Air / Akar Tergenang', kata:['tergenang','becek','akar busuk','banjir','drainase'], solusi:'Genangan air lama membuat akar kekurangan oksigen dan mudah busuk. Perbaiki saluran drainase agar air tidak menggenang lebih dari beberapa jam. Buat guludan/bedengan lebih tinggi bila lahan sering tergenang.' },
+  { judul:'Kemungkinan Serangan Tikus', kata:['tikus','batang terpotong','tanaman roboh dipotong'], solusi:'Gunakan perangkap tikus atau umpan beracun sesuai anjuran di sekitar lahan (bukan pada tanaman). Bersihkan gulma/semak di pematang yang jadi sarang tikus. Koordinasi gropyokan bersama petani sekitar biasanya lebih efektif daripada sendirian.' }
+];
+function matchKb(deskripsi){
+  const text = (deskripsi||'').toLowerCase();
+  if(!text.trim()) return [];
+  return KB_DIAGNOSA.map(entry=>{
+    const score = entry.kata.reduce((s,k)=> s + (text.includes(k) ? 1 : 0), 0);
+    return { ...entry, score };
+  }).filter(e=>e.score>0).sort((a,b)=> b.score-a.score).slice(0,3);
+}
 
 /* ======================================================================
    DATA LAYER (localStorage)
@@ -485,7 +562,7 @@ const STORAGE_KEY = 'catatan_tani_db_v1';
 let db = null;
 
 function emptyDb(){
-  return { fields:[], cycles:[], activities:[], harvests:[], notes:[], procurements:[], meta:{ createdAt: Date.now() } };
+  return { fields:[], cycles:[], activities:[], harvests:[], notes:[], procurements:[], plans:[], diagnoses:[], meta:{ createdAt: Date.now() } };
 }
 function load(){
   try{
@@ -501,6 +578,8 @@ function load(){
 function migrateIfNeeded(){
   if(!db.procurements) db.procurements = [];
   if(!db.notes) db.notes = [];
+  if(!db.plans) db.plans = [];
+  if(!db.diagnoses) db.diagnoses = [];
   let changed = false;
   db.activities.forEach(a=>{
     if(a.items && !a.pemakaian){
@@ -520,7 +599,7 @@ function save(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
 }
 function hasAnyData(){
-  return db.fields.length || db.cycles.length || db.activities.length || db.harvests.length || db.notes.length || db.procurements.length;
+  return db.fields.length || db.cycles.length || db.activities.length || db.harvests.length || db.notes.length || db.procurements.length || db.plans.length || db.diagnoses.length;
 }
 
 /* ---- CRUD helpers ---- */
@@ -609,6 +688,166 @@ function addOrUpdateNote(data){
   upsert(db.notes, obj); save(); return obj;
 }
 function deleteNote(id){ removeById(db.notes, id); save(); }
+
+/* ---- Rencana Kegiatan (planned tasks / reminders) ---- */
+function addDays(dateStr, n){
+  const d = new Date(dateStr+'T00:00:00'); d.setDate(d.getDate()+Number(n||0));
+  return d.toISOString().slice(0,10);
+}
+function addOrUpdatePlan(data){
+  const obj = {
+    id: data.id||uid(), cycleId: data.cycleId||null, judul:(data.judul||'').trim(), jenis: data.jenis||'lainnya',
+    tanggalMulai: data.tanggalMulai||todayStr(), recurrenceType: data.recurrenceType||'sekali',
+    intervalHari: data.recurrenceType==='sekali' ? null : Number(data.intervalHari)||7,
+    lastDoneDate: data.lastDoneDate||null, catatan:(data.catatan||'').trim(),
+    status: data.status||'aktif', createdAt: data.createdAt||Date.now()
+  };
+  upsert(db.plans, obj); save(); return obj;
+}
+function deletePlan(id){ removeById(db.plans, id); save(); }
+function planNextDue(plan){
+  if(plan.status!=='aktif') return null;
+  if(plan.recurrenceType==='sekali') return plan.lastDoneDate ? null : plan.tanggalMulai;
+  const base = plan.lastDoneDate || plan.tanggalMulai;
+  return plan.lastDoneDate ? addDays(base, plan.intervalHari) : base;
+}
+function markPlanDone(id){
+  const plan = db.plans.find(x=>x.id===id); if(!plan) return;
+  plan.lastDoneDate = todayStr();
+  if(plan.recurrenceType==='sekali') plan.status = 'selesai';
+  save();
+}
+function planLabelRecurrence(plan){
+  return plan.recurrenceType==='sekali' ? 'Sekali' : `Tiap ${plan.intervalHari} hari`;
+}
+function getPlansWithDue(cycleId){
+  let list = db.plans.filter(p=> cycleId===undefined ? true : p.cycleId===cycleId);
+  return list.map(p=> ({ plan:p, due: planNextDue(p) })).sort((a,b)=> {
+    if(a.due && b.due) return a.due.localeCompare(b.due);
+    if(a.due) return -1; if(b.due) return 1;
+    return (b.plan.createdAt||0)-(a.plan.createdAt||0);
+  });
+}
+function getDuePlans(){
+  const today = todayStr();
+  return getPlansWithDue().filter(x=> x.due && x.due<=today);
+}
+function getUpcomingPlans(days){
+  const today = todayStr(); const horizon = addDays(today, days);
+  return getPlansWithDue().filter(x=> x.due && x.due>today && x.due<=horizon);
+}
+
+/* ---- Diagnosa Tanaman (problem reports + offline/AI suggestions) ---- */
+function addOrUpdateDiagnosis(data){
+  const obj = {
+    id: data.id||uid(), cycleId: data.cycleId||null, tanggal: data.tanggal||todayStr(), kategori: data.kategori||'lainnya',
+    deskripsi:(data.deskripsi||'').trim(), fotoDataUrl: data.fotoDataUrl!==undefined ? data.fotoDataUrl : (data.existingFoto||null),
+    aiJawaban: data.aiJawaban!==undefined ? data.aiJawaban : null, aiStatus: data.aiStatus||'belum',
+    createdAt: data.createdAt||Date.now()
+  };
+  upsert(db.diagnoses, obj); save(); return obj;
+}
+function deleteDiagnosis(id){ removeById(db.diagnoses, id); save(); }
+
+/* ======================================================================
+   NOTIFICATIONS (reminder for Rencana Kegiatan)
+   — Best-effort only: this is a client-only app with no push server, so a
+   reminder can only fire when the app is actually opened (foreground/loaded
+   in background tab). There is no server to wake the phone while the app is
+   fully closed. We're upfront about this in the Lainnya screen.
+   ====================================================================== */
+function notifSupported(){ return 'Notification' in window; }
+function notifPermission(){ return notifSupported() ? Notification.permission : 'unsupported'; }
+async function requestNotifPermission(){
+  if(!notifSupported()){ toast('Browser ini tidak mendukung notifikasi'); return 'unsupported'; }
+  const perm = await Notification.requestPermission();
+  return perm;
+}
+async function fireReminderNotification(due, {force=false} = {}){
+  if(!notifSupported() || Notification.permission!=='granted') return false;
+  const today = todayStr();
+  if(!force){
+    if(localStorage.getItem('ct_last_notify_date')===today) return false;
+  }
+  const title = 'Catatan Tani';
+  const body = due.length===1 ? `1 rencana jatuh tempo: ${due[0].plan.judul}` : `${due.length} rencana kegiatan jatuh tempo hari ini`;
+  try{
+    if('serviceWorker' in navigator){
+      const reg = await navigator.serviceWorker.ready;
+      await reg.showNotification(title, { body, icon:'icons/icon-192.png', badge:'icons/icon-192.png', tag:'ct-reminder' });
+    } else {
+      new Notification(title, { body, icon:'icons/icon-192.png' });
+    }
+    localStorage.setItem('ct_last_notify_date', today);
+    return true;
+  }catch(e){ return false; }
+}
+function checkAndNotifyDuePlans(){
+  const due = getDuePlans();
+  if(due.length) fireReminderNotification(due);
+  return due;
+}
+
+/* ---- Pengaturan Diagnosa AI (disimpan terpisah dari db — tidak ikut ekspor JSON) ---- */
+function getAiSettings(){
+  return {
+    apiKey: localStorage.getItem('ct_ai_key') || '',
+    model: localStorage.getItem('ct_ai_model') || 'claude-3-5-sonnet-20241022'
+  };
+}
+function saveAiSettings(apiKey, model){
+  localStorage.setItem('ct_ai_key', apiKey||'');
+  localStorage.setItem('ct_ai_model', model||'claude-3-5-sonnet-20241022');
+}
+async function askAiDiagnosis(diagnosis){
+  const { apiKey, model } = getAiSettings();
+  if(!apiKey) throw new Error('API key belum diisi');
+  const promptText = `Saya petani kecil di Indonesia. Tolong bantu diagnosis masalah tanaman berikut dan berikan solusi praktis yang bisa dikerjakan petani kecil (bahan/metode yang mudah didapat). Jawab dalam Bahasa Indonesia, ringkas, dalam bentuk poin-poin: (1) Kemungkinan penyebab, (2) Langkah solusi.\n\nKategori masalah: ${KATEGORI_DIAGNOSA[diagnosis.kategori]||diagnosis.kategori}\nDeskripsi: ${diagnosis.deskripsi||'(tidak ada deskripsi)'}`;
+  const content = [{ type:'text', text: promptText }];
+  if(diagnosis.fotoDataUrl){
+    const base64 = diagnosis.fotoDataUrl.split(',').pop();
+    content.push({ type:'image', source:{ type:'base64', media_type:'image/jpeg', data: base64 } });
+  }
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model, max_tokens:800, messages:[{ role:'user', content }] })
+  });
+  if(!res.ok){
+    const errText = await res.text().catch(()=> '');
+    throw new Error('Gagal menghubungi AI ('+res.status+'): '+errText.slice(0,200));
+  }
+  const json = await res.json();
+  const text = (json.content||[]).map(c=>c.text).filter(Boolean).join('\n').trim();
+  if(!text) throw new Error('AI tidak memberikan jawaban');
+  return text;
+}
+
+/* ---- Foto: kompresi di sisi klien agar hemat penyimpanan lokal ---- */
+function resizeImageFile(file, maxW=900, quality=0.72){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = ()=> reject(new Error('Gagal membaca file'));
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onerror = ()=> reject(new Error('Gagal memuat gambar'));
+      img.onload = ()=>{
+        const scale = Math.min(1, maxW/img.width);
+        const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+        const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 /* ======================================================================
    ANALYTICS
@@ -703,6 +942,13 @@ function seedSampleData(){
   addOrUpdateActivity({ cycleId:c2.id, jenis:'pemupukan', tanggal:'2026-03-25', perlakuan:'Pupuk Kandang', pemakaian:[{procurementId:pPupukKandang.id, jumlah:200}] });
   addOrUpdateNote({ cycleId:c2.id, tanggal:'2026-04-02', kategori:'hama_penyakit', isi:'Ditemukan kutu daun di beberapa tanaman, sudah disemprot.' });
   addOrUpdateNote({ cycleId:null, tanggal: todayStr(), kategori:'umum', isi:'Ini contoh catatan umum yang tidak terikat pada satu siklus tertentu.' });
+
+  // Rencana Kegiatan contoh — sengaja dibuat jatuh tempo hari ini agar langsung terlihat.
+  addOrUpdatePlan({ cycleId:c2.id, judul:'Semprot pestisida susulan', jenis:'penyemprotan', tanggalMulai: todayStr(), recurrenceType:'interval', intervalHari:7, catatan:'Cek populasi kutu daun sebelum menyemprot ulang.' });
+  addOrUpdatePlan({ cycleId:c1.id, judul:'Cek kondisi lahan pasca panen', jenis:'lainnya', tanggalMulai: addDays(todayStr(),3), recurrenceType:'sekali' });
+
+  // Diagnosa contoh — cocok dengan basis pengetahuan offline (kata kunci "kutu").
+  addOrUpdateDiagnosis({ cycleId:c2.id, tanggal: todayStr(), kategori:'hama', deskripsi:'Daun cabai mengeriting dan ada semacam kutu kecil di bawah daun.' });
 
   toast('Data contoh dimuat');
 }
@@ -951,7 +1197,82 @@ function renderCurrentView(){
   else if(currentTab==='pengadaan') renderPengadaan();
   else if(currentTab==='analisis') renderAnalisis();
   else if(currentTab==='lainnya') renderLainnya();
+  updateBellBadge();
 }
+
+/* ======================================================================
+   RENCANA — bell / reminder sheet (global, cross-cycle)
+   ====================================================================== */
+function updateBellBadge(){
+  const badge = document.getElementById('bellBadge');
+  if(!badge) return;
+  const n = getDuePlans().length;
+  badge.style.display = n>0 ? 'flex' : 'none';
+  badge.textContent = n>9 ? '9+' : String(n);
+}
+function planContextLabel(plan){
+  if(!plan.cycleId) return 'Umum';
+  const c = db.cycles.find(x=>x.id===plan.cycleId);
+  if(!c) return 'Umum';
+  const f = db.fields.find(x=>x.id===c.fieldId);
+  return `${c.komoditas}${f?' · '+f.nama:''}`;
+}
+function planDueBadgeHtml(due){
+  const today = todayStr();
+  if(!due) return `<span class="plan-due-badge done">Selesai</span>`;
+  if(due<today) return `<span class="plan-due-badge overdue">Terlewat</span>`;
+  if(due===today) return `<span class="plan-due-badge today">Hari Ini</span>`;
+  return `<span class="plan-due-badge upcoming">${fmtDateShort(due)}</span>`;
+}
+function planRowHtml(plan, due, opts){
+  opts = opts || {};
+  return `<div class="plan-item ${due && due<=todayStr()?'due':''}" data-plan="${plan.id}">
+    <div class="li-icon">${ICONS[ACT_ICON[plan.jenis]]||ICONS.calendar}</div>
+    <div class="li-body">
+      <div class="li-title">${escapeHtml(plan.judul)}</div>
+      <div class="li-sub">${opts.hideContext?'':escapeHtml(planContextLabel(plan))+' · '}${planLabelRecurrence(plan)}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      ${planDueBadgeHtml(due)}
+      ${due ? `<button type="button" class="mini-btn" data-done="${plan.id}" title="Tandai selesai">${ICONS.check}</button>` : ''}
+    </div>
+  </div>`;
+}
+function bindPlanRowEvents(root, onChange){
+  root.querySelectorAll('[data-done]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{ e.stopPropagation(); markPlanDone(btn.dataset.done); toast('Ditandai selesai'); onChange(); });
+  });
+  root.querySelectorAll('[data-plan]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const plan = db.plans.find(x=>x.id===el.dataset.plan); if(!plan) return;
+      closeSheet();
+      if(plan.cycleId) openPlanForm(plan.cycleId, plan.id); else openPlanForm(null, plan.id);
+    });
+  });
+}
+function openReminderSheet(){
+  const due = getDuePlans();
+  const upcoming = getUpcomingPlans(7);
+  let html = '';
+  if(!due.length && !upcoming.length){
+    html = `<div style="text-align:center;padding:24px 10px;color:var(--ink-mute);font-size:13px;">Belum ada rencana kegiatan mendatang. Tambahkan rencana (mis. jadwal pemupukan ulang) agar diingatkan di sini.</div>`;
+  } else {
+    if(due.length){
+      html += `<div style="font-weight:700;font-size:12.5px;color:var(--terracotta-dark);margin-bottom:8px;">JATUH TEMPO (${due.length})</div>`;
+      html += due.map(x=> planRowHtml(x.plan, x.due)).join('');
+    }
+    if(upcoming.length){
+      html += `<div style="font-weight:700;font-size:12.5px;color:var(--ink-mute);margin:14px 0 8px;">7 HARI KE DEPAN</div>`;
+      html += upcoming.map(x=> planRowHtml(x.plan, x.due)).join('');
+    }
+  }
+  openSheet('Rencana & Pengingat', html, [
+    { label:'+ Rencana Baru', cls:'btn-outline', block:false, onClick: ()=>{ closeSheet(); openPlanForm(null); } },
+    { label:'Tutup', cls:'btn-primary', onClick: closeSheet }
+  ]);
+  bindPlanRowEvents(sheetBody, ()=>{ closeSheet(); updateBellBadge(); openReminderSheet(); });
+}
+document.getElementById('bellBtn').addEventListener('click', ()=>{ vibrate(); openReminderSheet(); });
 
 /* ======================================================================
    ICONS (small inline helpers)
@@ -973,7 +1294,13 @@ const ICONS = {
   upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9m0 0l-4 4m4-4l4 4M4 4h16"/></svg>',
   table: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>',
   reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.4 2.6L3 8"/><path d="M3 3v5h5"/></svg>',
-  sparkle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'
+  sparkle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 16v-5a6 6 0 10-12 0v5l-2 3h16z"/><path d="M9.5 20.5a2.5 2.5 0 005 0"/></svg>',
+  calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4M16 3v4"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>',
+  camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>',
+  printer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M6 14h12v7H6z"/></svg>',
+  robot: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="2.5"/><path d="M12 8V4M9 3.5h6"/><circle cx="9" cy="13.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="13.5" r="1.4" fill="currentColor" stroke="none"/><path d="M9 17h6"/></svg>'
 };
 const ACT_ICON = { olah_lahan:'plot', pembibitan:'seed', tanam:'seed', pemupukan:'harvest', penyemprotan:'spray', penyiangan:'plot', pengairan:'water', panen_kerja:'harvest', perawatan_lain:'note', lainnya:'note' };
 
@@ -1027,12 +1354,31 @@ function renderDashboard(){
       <div class="kpi"><div class="label">Siklus Aktif</div><div class="value">${aktif}</div><div class="sub">dari ${db.cycles.length} total siklus</div></div>
     </div>
 
+    <div id="dashReminders"></div>
+
+    <div class="card card-pad" style="display:flex;align-items:center;gap:12px;margin-top:4px;background:linear-gradient(120deg,#fdeee0,#fff6ee);border-color:#ecd9bd;" id="dashDiagCard">
+      <div class="li-icon" style="background:#fff;">${ICONS.camera}</div>
+      <div style="flex:1;"><div style="font-weight:700;font-size:13.5px;color:var(--forest-3);">Tanaman terlihat bermasalah?</div><div style="font-size:11.5px;color:var(--ink-soft);margin-top:1px;">Ajukan masalah + foto, cari kemungkinan solusi</div></div>
+      <button class="btn btn-accent btn-sm" id="dashDiagBtn" style="flex-shrink:0;">Cek</button>
+    </div>
+
     <div class="section-title"><h3>Profit per Siklus Tanam <span class="muted">· 6 terbaru</span></h3></div>
     <div class="viz-card"><div id="dashChart"></div></div>
 
     <div class="section-title"><h3>Aktivitas Terbaru</h3><button class="link-btn" data-goto="musim">Lihat semua →</button></div>
     <div id="dashFeed"></div>
   `;
+
+  const due = getDuePlans();
+  const remRoot = document.getElementById('dashReminders');
+  if(due.length){
+    remRoot.innerHTML = `
+      <div class="section-title" style="margin-top:18px;"><h3>Rencana Jatuh Tempo <span class="muted">· ${due.length}</span></h3><button class="link-btn" id="dashOpenReminders">Lihat semua</button></div>
+      ${due.slice(0,3).map(x=> planRowHtml(x.plan, x.due)).join('')}
+    `;
+    bindPlanRowEvents(remRoot, ()=> renderDashboard());
+    document.getElementById('dashOpenReminders').addEventListener('click', openReminderSheet);
+  }
 
   renderBarChart(document.getElementById('dashChart'), {
     categories: top.map(f=> f.cycle.komoditas + ' · ' + (f.field?f.field.nama:'')),
@@ -1053,6 +1399,7 @@ function renderDashboard(){
   }
 
   document.getElementById('dismissBanner')?.addEventListener('click', ()=>{ localStorage.setItem('ct_hide_banner','1'); document.getElementById('localWarnBanner').style.display='none'; });
+  document.getElementById('dashDiagBtn').addEventListener('click', ()=> openDiagnosisForm(null));
   root.querySelectorAll('[data-goto]').forEach(b=> b.addEventListener('click', ()=> switchTab(b.dataset.goto)));
   root.querySelectorAll('[data-goto-cycle]').forEach(b=> b.addEventListener('click', ()=> openCycleDetail(b.dataset.gotoCycle)));
 }
@@ -1310,9 +1657,11 @@ function renderCycleDetail(){
       <div class="kpi"><div class="label">Luas</div><div class="value">${field?fmtNum(field.luas,2)+' '+field.satuanLuas:'-'}</div></div>
     </div>
 
-    <div class="subtabs">
+    <div class="subtabs" style="overflow-x:auto;scrollbar-width:none;">
       <div class="subtab" data-sub="aktivitas">Aktivitas</div>
       <div class="subtab" data-sub="panen">Panen</div>
+      <div class="subtab" data-sub="rencana">Rencana</div>
+      <div class="subtab" data-sub="diagnosa">Diagnosa</div>
       <div class="subtab" data-sub="catatan">Catatan</div>
     </div>
     <div id="cycleSubContent"></div>
@@ -1328,6 +1677,8 @@ function renderCycleDetail(){
   const sub = document.getElementById('cycleSubContent');
   if(cycleDetailTab==='aktivitas') renderCycleActivities(sub, c);
   else if(cycleDetailTab==='panen') renderCycleHarvests(sub, c);
+  else if(cycleDetailTab==='rencana') renderCyclePlans(sub, c);
+  else if(cycleDetailTab==='diagnosa') renderCycleDiagnoses(sub, c);
   else renderCycleNotes(sub, c);
 }
 
@@ -1380,6 +1731,31 @@ function renderCycleNotes(root, c){
   `;
   document.getElementById('addNoteBtn').addEventListener('click', ()=> openNoteForm(c.id));
   root.querySelectorAll('[data-note]').forEach(el=> el.addEventListener('click', ()=> openNoteForm(c.id, el.dataset.note)));
+}
+
+function renderCyclePlans(root, c){
+  const rows = getPlansWithDue(c.id);
+  root.innerHTML = `
+    <button class="btn btn-accent btn-block" id="addPlanBtn" style="margin-bottom:12px;">+ Tambah Rencana Kegiatan</button>
+    ${rows.length ? rows.map(x=> planRowHtml(x.plan, x.due, {hideContext:true})).join('') : `<div class="card card-pad" style="text-align:center;color:var(--ink-mute);font-size:13px;">Belum ada rencana kegiatan untuk siklus ini. Tambahkan misal "Semprot ulang 7 hari lagi" agar diingatkan otomatis.</div>`}
+  `;
+  document.getElementById('addPlanBtn').addEventListener('click', ()=> openPlanForm(c.id));
+  bindPlanRowEvents(root, ()=> renderCyclePlans(root, c));
+}
+
+function renderCycleDiagnoses(root, c){
+  const ds = db.diagnoses.filter(d=>d.cycleId===c.id).sort((a,b)=> b.tanggal.localeCompare(a.tanggal));
+  root.innerHTML = `
+    <button class="btn btn-accent btn-block" id="addDiagBtn" style="margin-bottom:12px;">+ Ajukan Masalah / Diagnosa</button>
+    ${ds.length ? ds.map(d=>`
+      <div class="list-item" data-diag="${d.id}">
+        ${d.fotoDataUrl ? `<img src="${d.fotoDataUrl}" style="width:40px;height:40px;border-radius:11px;object-fit:cover;flex-shrink:0;">` : `<div class="li-icon">${ICONS.info}</div>`}
+        <div class="li-body"><div class="li-title">${KATEGORI_DIAGNOSA[d.kategori]||d.kategori}</div><div class="li-sub">${escapeHtml((d.deskripsi||'').slice(0,50))}${(d.deskripsi||'').length>50?'…':''}</div></div>
+        <div class="li-trail" style="font-size:11px;color:var(--ink-mute);">${fmtDateShort(d.tanggal)}${d.aiStatus==='selesai'?'<br><span style="color:#4a3aa7;font-weight:700;">AI ✓</span>':''}</div>
+      </div>`).join('') : `<div class="card card-pad" style="text-align:center;color:var(--ink-mute);font-size:13px;">Belum ada laporan masalah. Ada tanaman terlihat aneh? Ajukan di sini dengan atau tanpa foto untuk mencari kemungkinan solusi.</div>`}
+  `;
+  document.getElementById('addDiagBtn').addEventListener('click', ()=> openDiagnosisForm(c.id));
+  root.querySelectorAll('[data-diag]').forEach(el=> el.addEventListener('click', ()=> openDiagnosisForm(c.id, el.dataset.diag)));
 }
 
 /* ---- Activity form (with dynamic cost items) ---- */
@@ -1568,6 +1944,169 @@ function openNoteForm(cycleId, nId){
   }, '', n ? ()=>{ confirmDialog('Hapus Catatan?', 'Catatan ini akan dihapus permanen.', ()=>{ deleteNote(n.id); toast('Dihapus'); openCycleDetail(cycleId,'catatan'); }); } : null);
 }
 
+/* ---- Rencana Kegiatan form ---- */
+function openPlanForm(cycleId, planId){
+  const p = planId ? db.plans.find(x=>x.id===planId) : null;
+  const initialCycleId = p ? p.cycleId : cycleId;
+  let recurrenceType = p ? (p.recurrenceType==='sekali' ? 'sekali' : (['3','7','14','30'].includes(String(p.intervalHari)) ? String(p.intervalHari) : 'custom')) : 'sekali';
+  let customInterval = (p && recurrenceType==='custom') ? p.intervalHari : 7;
+
+  function cycleOptionsHtml(){
+    let opts = `<option value="">Umum (tidak terikat siklus)</option>`;
+    db.cycles.forEach(cy=>{
+      const f = db.fields.find(x=>x.id===cy.fieldId);
+      opts += `<option value="${cy.id}" ${initialCycleId===cy.id?'selected':''}>${escapeHtml(cy.komoditas)} · ${escapeHtml(f?f.nama:'')} (${escapeHtml(cy.musim)})</option>`;
+    });
+    return opts;
+  }
+  function pillsHtml(){
+    return RECURRENCE_PRESETS.map(opt=> `<div class="pill ${recurrenceType===opt.value?'active':''}" data-rec="${opt.value}">${opt.label}</div>`).join('');
+  }
+  function bodyHtml(){
+    return `
+      <div class="field"><label>Judul Rencana</label><input type="text" id="fld_judul" value="${escapeHtml(p?p.judul:'')}" placeholder="cth. Semprot pestisida susulan"></div>
+      <div class="field"><label>Terkait Siklus</label><select id="fld_cycleId">${cycleOptionsHtml()}</select></div>
+      <div class="field"><label>Jenis (opsional)</label><select id="fld_jenis">${Object.entries(JENIS_AKTIVITAS).map(([k,v])=>`<option value="${k}" ${(p?p.jenis:'lainnya')===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div class="field"><label>Tanggal Mulai</label><input type="date" id="fld_tanggalMulai" value="${p?p.tanggalMulai:todayStr()}"></div>
+      <div class="field"><label>Pengulangan</label><div class="pill-row" id="recPills">${pillsHtml()}</div></div>
+      <div class="field" id="customIntervalField" style="${recurrenceType==='custom'?'':'display:none'}"><label>Tiap Berapa Hari?</label><input type="number" min="1" id="fld_customInterval" value="${customInterval}"></div>
+      <div class="hint" id="recHint" style="margin-top:-8px;margin-bottom:14px;">${recPillHint(recurrenceType)}</div>
+      <div class="field"><label>Catatan (opsional)</label><textarea id="fld_catatan" placeholder="cth. Detail dosis, target area, dll.">${escapeHtml(p?p.catatan:'')}</textarea></div>
+    `;
+  }
+
+  function afterSave(){
+    updateBellBadge();
+    if(currentTab==='cycle') renderCycleDetail(); else renderCurrentView();
+  }
+
+  const buttons = [];
+  if(p) buttons.push({ label:'Hapus', cls:'btn-danger', block:false, onClick: ()=>{
+    confirmDialog('Hapus Rencana?', 'Rencana kegiatan ini akan dihapus permanen.', ()=>{ deletePlan(p.id); toast('Rencana dihapus'); closeSheet(); afterSave(); });
+  }});
+  buttons.push({ label:'Batal', cls:'btn-ghost', block:false, onClick: closeSheet });
+  buttons.push({ label:'Simpan', cls:'btn-primary', onClick: ()=>{
+    const judul = document.getElementById('fld_judul').value.trim();
+    if(!judul){ toast('Judul rencana wajib diisi'); return; }
+    const data = {
+      id: p?p.id:undefined, judul,
+      cycleId: document.getElementById('fld_cycleId').value || null,
+      jenis: document.getElementById('fld_jenis').value,
+      tanggalMulai: document.getElementById('fld_tanggalMulai').value || todayStr(),
+      recurrenceType: recurrenceType==='sekali' ? 'sekali' : 'interval',
+      intervalHari: recurrenceType==='sekali' ? null : (recurrenceType==='custom' ? (Number(document.getElementById('fld_customInterval').value)||7) : Number(recurrenceType)),
+      catatan: document.getElementById('fld_catatan').value,
+      lastDoneDate: p?p.lastDoneDate:null, status: p?p.status:'aktif'
+    };
+    addOrUpdatePlan(data); toast('Rencana disimpan'); closeSheet(); afterSave();
+  }});
+
+  openSheet(p?'Ubah Rencana':'Tambah Rencana Kegiatan', bodyHtml(), buttons);
+  document.querySelectorAll('#recPills .pill').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      recurrenceType = el.dataset.rec;
+      document.querySelectorAll('#recPills .pill').forEach(p2=> p2.classList.toggle('active', p2.dataset.rec===recurrenceType));
+      document.getElementById('customIntervalField').style.display = recurrenceType==='custom' ? 'block' : 'none';
+      document.getElementById('recHint').textContent = recPillHint(recurrenceType);
+    });
+  });
+}
+function recPillHint(recurrenceType){
+  return recurrenceType==='sekali' ? 'Pengingat muncul sekali pada tanggal di atas.' : 'Tiap kali ditandai "selesai", pengingat berikutnya otomatis dijadwalkan dari tanggal selesai + interval.';
+}
+
+/* ---- Diagnosa Tanaman form ---- */
+function openDiagnosisForm(cycleId, diagId){
+  const d = diagId ? db.diagnoses.find(x=>x.id===diagId) : null;
+  let fotoDataUrl = d ? d.fotoDataUrl : null;
+
+  function bodyHtml(){
+    const kbMatches = matchKb(d?d.deskripsi:'');
+    return `
+      <div class="field"><label>Kategori</label><select id="fld_kategori">${Object.entries(KATEGORI_DIAGNOSA).map(([k,v])=>`<option value="${k}" ${(d?d.kategori:'hama')===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      <div class="field"><label>Tanggal</label><input type="date" id="fld_tanggal" value="${d?d.tanggal:todayStr()}"></div>
+      <div class="field"><label>Deskripsi Masalah</label><textarea id="fld_deskripsi" placeholder="cth. Daun menguning dari bawah, ada bercak coklat">${escapeHtml(d?d.deskripsi:'')}</textarea></div>
+      <div class="field"><label>Foto Tanaman (opsional)</label>
+        <div id="fotoPreviewWrap">${fotoDataUrl?`<img src="${fotoDataUrl}" class="foto-preview" id="fotoPreview">`:''}</div>
+        <input type="file" accept="image/*" capture="environment" id="fld_foto">
+        <div class="hint">Foto akan dikompres otomatis agar hemat penyimpanan di HP.</div>
+      </div>
+      <div id="kbWrap">${kbMatches.length ? `<div class="hint" style="margin-bottom:8px;">Kecocokan dari kata kunci deskripsi:</div>` + kbMatches.map(m=>`<div class="kb-card"><h4>${escapeHtml(m.judul)}</h4><p>${escapeHtml(m.solusi)}</p></div>`).join('') : ''}</div>
+      <button type="button" class="btn btn-outline btn-sm btn-block" id="checkKbBtn" style="margin-bottom:8px;">🔍 Cari Kecocokan di Basis Pengetahuan</button>
+      <div id="aiWrap">${d && d.aiJawaban ? `<div class="ai-card"><h4>${ICONS.robot} Jawaban AI</h4><p>${escapeHtml(d.aiJawaban)}</p></div>` : ''}</div>
+    `;
+  }
+
+  function refreshKb(){
+    const desk = document.getElementById('fld_deskripsi').value;
+    const matches = matchKb(desk);
+    document.getElementById('kbWrap').innerHTML = matches.length ? `<div class="hint" style="margin-bottom:8px;">Kecocokan dari kata kunci deskripsi:</div>` + matches.map(m=>`<div class="kb-card"><h4>${escapeHtml(m.judul)}</h4><p>${escapeHtml(m.solusi)}</p></div>`).join('') : `<div class="hint" style="margin-bottom:8px;">Tidak ada kecocokan otomatis. Coba jelaskan gejala lebih spesifik (mis. warna, bagian tanaman, kapan muncul).</div>`;
+  }
+
+  function buildData(){
+    return {
+      id: d?d.id:undefined, cycleId,
+      kategori: document.getElementById('fld_kategori').value,
+      tanggal: document.getElementById('fld_tanggal').value || todayStr(),
+      deskripsi: document.getElementById('fld_deskripsi').value,
+      fotoDataUrl, aiJawaban: d?d.aiJawaban:null, aiStatus: d?d.aiStatus:'belum'
+    };
+  }
+
+  const buttons = [];
+  if(d) buttons.push({ label:'Hapus', cls:'btn-danger', block:false, onClick: ()=>{
+    confirmDialog('Hapus Laporan?', 'Laporan masalah ini beserta foto akan dihapus permanen.', ()=>{
+      deleteDiagnosis(d.id); toast('Dihapus'); closeSheet();
+      if(currentTab==='cycle') renderCycleDetail(); else renderCurrentView();
+    });
+  }});
+  buttons.push({ label:'Batal', cls:'btn-ghost', block:false, onClick: closeSheet });
+  buttons.push({ label:'Simpan', cls:'btn-primary', onClick: ()=>{
+    const saved = addOrUpdateDiagnosis(buildData());
+    toast('Laporan disimpan'); closeSheet();
+    if(currentTab==='cycle') renderCycleDetail(); else renderCurrentView();
+  }});
+
+  openSheet(d?'Ubah Laporan Masalah':'Ajukan Masalah / Diagnosa', bodyHtml(), buttons);
+
+  document.getElementById('fld_deskripsi').addEventListener('input', ()=>{});
+  document.getElementById('checkKbBtn').addEventListener('click', refreshKb);
+  document.getElementById('fld_foto').addEventListener('change', async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
+    toast('Memproses foto...');
+    try{
+      fotoDataUrl = await resizeImageFile(file);
+      document.getElementById('fotoPreviewWrap').innerHTML = `<img src="${fotoDataUrl}" class="foto-preview" id="fotoPreview">`;
+      toast('Foto siap');
+    }catch(err){ toast('Gagal memproses foto'); }
+  });
+
+  const aiSettings = getAiSettings();
+  const aiBtnWrap = document.createElement('div');
+  if(aiSettings.apiKey){
+    aiBtnWrap.innerHTML = `<button type="button" class="btn btn-block" id="askAiBtn" style="background:linear-gradient(120deg,#4a3aa7,#7a5fd4);color:#fff;margin-bottom:10px;">${ICONS.robot} Tanya AI (butuh internet)</button>`;
+  } else {
+    aiBtnWrap.innerHTML = `<div class="hint" style="margin-bottom:10px;">Aktifkan "Diagnosa AI" di tab Lainnya untuk analisis foto oleh AI (opsional, perlu API key sendiri &amp; internet).</div>`;
+  }
+  document.getElementById('aiWrap').before(aiBtnWrap);
+  document.getElementById('askAiBtn')?.addEventListener('click', async ()=>{
+    const btn = document.getElementById('askAiBtn');
+    btn.innerHTML = 'Menghubungi AI...'; btn.disabled = true;
+    try{
+      const data = buildData();
+      const answer = await askAiDiagnosis(data);
+      data.aiJawaban = answer; data.aiStatus = 'selesai';
+      const saved = addOrUpdateDiagnosis(data);
+      document.getElementById('aiWrap').innerHTML = `<div class="ai-card"><h4>${ICONS.robot} Jawaban AI</h4><p>${escapeHtml(answer)}</p></div>`;
+      toast('AI memberi jawaban');
+    }catch(err){
+      toast('Gagal: '+err.message);
+    } finally {
+      btn.innerHTML = ICONS.robot+' Tanya AI (butuh internet)'; btn.disabled = false;
+    }
+  });
+}
+
 /* ======================================================================
    VIEW: ANALISIS
    ====================================================================== */
@@ -1588,10 +2127,22 @@ function renderAnalisis(){
 
   const treatments = analyzeTreatments().filter(t=> !analysisFilter.fieldId || t.cycles.some(f=>f.cycle.fieldId===analysisFilter.fieldId));
 
+  const filterLabel = [
+    analysisFilter.fieldId ? (db.fields.find(f=>f.id===analysisFilter.fieldId)||{}).nama : 'Semua Lahan',
+    analysisFilter.status ? STATUS_SIKLUS[analysisFilter.status] : 'Semua Status'
+  ].join(' · ');
+
   root.innerHTML = `
-    <div class="filter-row">
-      <select class="filter-select" id="anFilterField">${fieldOpts}</select>
-      <select class="filter-select" id="anFilterStatus">${statusOpts}</select>
+    <div class="print-header">
+      <h1>Catatan Tani — Laporan Analisis</h1>
+      <div class="meta">Dicetak ${fmtDate(todayStr())} · Filter: ${escapeHtml(filterLabel)}</div>
+    </div>
+    <div class="no-print" style="display:flex;align-items:center;gap:8px;">
+      <div class="filter-row" style="flex:1;margin-bottom:0;">
+        <select class="filter-select" id="anFilterField">${fieldOpts}</select>
+        <select class="filter-select" id="anFilterStatus">${statusOpts}</select>
+      </div>
+      <button class="btn btn-outline btn-sm" id="printBtn" style="flex-shrink:0;">${ICONS.printer} Cetak</button>
     </div>
 
     <div class="section-title"><h3>Biaya vs Pendapatan vs Profit</h3></div>
@@ -1634,6 +2185,7 @@ function renderAnalisis(){
 
   document.getElementById('anFilterField').addEventListener('change', (e)=>{ analysisFilter.fieldId=e.target.value; renderAnalisis(); });
   document.getElementById('anFilterStatus').addEventListener('change', (e)=>{ analysisFilter.status=e.target.value; renderAnalisis(); });
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
 }
 
 /* ======================================================================
@@ -1719,6 +2271,24 @@ function renderLainnya(){
     <div class="settings-item" id="btnCsv3"><div class="si-icon">${ICONS.table}</div><div><div class="si-title">Semua Hasil Panen (CSV)</div><div class="si-sub">Rincian tiap catatan panen</div></div></div>
     <div class="settings-item" id="btnCsv4"><div class="si-icon">${ICONS.table}</div><div><div class="si-title">Semua Pengadaan & Stok (CSV)</div><div class="si-sub">Pembelian, terpakai, dan sisa stok</div></div></div>
 
+    <div class="section-title"><h3>Notifikasi Pengingat</h3></div>
+    <div class="banner" style="background:linear-gradient(120deg,#eef4ea,#e7f0e6);border-color:#d6e4d2;">
+      ${ICONS.info}
+      <p>Notifikasi hanya bisa muncul saat aplikasi ini <b>dibuka</b> (tidak ada server yang membangunkan HP saat aplikasi tertutup total). Untuk hasil terbaik, buka aplikasi tiap hari, mis. tiap pagi.</p>
+    </div>
+    <div class="settings-item" id="btnNotif"><div class="si-icon">${ICONS.bell}</div><div><div class="si-title">Status Notifikasi</div><div class="si-sub" id="notifStatusText">Memeriksa...</div></div></div>
+
+    <div class="section-title"><h3>Diagnosa AI <span class="muted" style="font-size:11px;font-weight:400;">(opsional)</span></h3></div>
+    <div class="banner" style="background:linear-gradient(120deg,#f3f0ff,#fdeee0);border-color:#ded6f5;">
+      ${ICONS.robot}
+      <p>Isi API key Anthropic milik Anda sendiri agar fitur "Tanya AI" pada Diagnosa Tanaman bisa menganalisis foto. Key disimpan <b>hanya di HP ini</b>, dikirim langsung ke Anthropic saat dipakai (bukan lewat server kami), dan pemakaiannya ditagih ke akun API Anda sendiri. Kosongkan bila tidak ingin memakai fitur ini — Diagnosa tetap berfungsi lewat basis pengetahuan offline.</p>
+    </div>
+    <div class="card card-pad">
+      <div class="field"><label>API Key Anthropic</label><input type="password" id="fld_aiKey" placeholder="sk-ant-..." value="${escapeHtml(getAiSettings().apiKey)}"></div>
+      <div class="field" style="margin-bottom:6px;"><label>Model (opsional, untuk pengguna lanjutan)</label><input type="text" id="fld_aiModel" value="${escapeHtml(getAiSettings().model)}"></div>
+      <button class="btn btn-primary btn-block btn-sm" id="btnSaveAi">Simpan Pengaturan AI</button>
+    </div>
+
     <div class="section-title"><h3>Data</h3></div>
     <div class="settings-item" id="btnSeed"><div class="si-icon">${ICONS.sparkle}</div><div><div class="si-title">Muat Data Contoh</div><div class="si-sub">Tambahkan contoh data untuk eksplorasi</div></div></div>
     <div class="settings-item" id="btnReset" style="border-color:#f0d3cc;"><div class="si-icon" style="background:var(--bad-bg);color:var(--bad);">${ICONS.reset}</div><div><div class="si-title" style="color:var(--bad);">Hapus Semua Data</div><div class="si-sub">Tindakan ini tidak bisa dibatalkan</div></div></div>
@@ -1726,8 +2296,8 @@ function renderLainnya(){
     <div class="section-title"><h3>Tentang</h3></div>
     <div class="card card-pad" style="font-size:12.5px;color:var(--ink-soft);line-height:1.7;">
       <b style="color:var(--forest-3);">Catatan Tani</b> — jurnal digital untuk mencatat setiap aktivitas pertanian, dari olah lahan sampai panen, agar Anda tahu biaya produksi &amp; keuntungan sebenarnya, dan punya data nyata untuk keputusan usaha tani ke depan.<br><br>
-      Seluruh data disimpan <b>secara lokal di perangkat ini saja</b> (tidak dikirim ke server manapun). Cadangkan secara berkala agar data aman jika HP hilang, rusak, atau data browser terhapus.<br><br>
-      Versi 1.0
+      Seluruh data disimpan <b>secara lokal di perangkat ini saja</b> (tidak dikirim ke server manapun, kecuali fitur Diagnosa AI opsional yang mengirim langsung ke Anthropic bila diaktifkan). Cadangkan secara berkala agar data aman jika HP hilang, rusak, atau data browser terhapus.<br><br>
+      Versi 1.1
     </div>
   `;
   document.getElementById('btnExportJson').addEventListener('click', exportJson);
@@ -1739,6 +2309,33 @@ function renderLainnya(){
   document.getElementById('btnCsv4').addEventListener('click', exportCsvPengadaan);
   document.getElementById('btnSeed').addEventListener('click', ()=> confirmDialog('Muat Data Contoh?', 'Data contoh (lahan, siklus, aktivitas, panen) akan ditambahkan ke data Anda saat ini.', ()=>{ seedSampleData(); renderCurrentView(); }, 'Muat'));
   document.getElementById('btnReset').addEventListener('click', ()=> confirmDialog('Hapus Semua Data?', 'Seluruh lahan, siklus, aktivitas, panen, dan catatan akan dihapus permanen dari HP ini. Pastikan sudah mengekspor cadangan jika diperlukan.', ()=>{ db = emptyDb(); save(); toast('Semua data dihapus'); switchTab('dashboard'); }, 'Hapus Semua'));
+
+  refreshNotifStatus();
+  document.getElementById('btnNotif').addEventListener('click', async ()=>{
+    const perm = notifPermission();
+    if(perm==='granted'){
+      const fired = await fireReminderNotification(getDuePlans().length ? getDuePlans() : [{plan:{judul:'Uji coba notifikasi'}}], {force:true});
+      toast(fired ? 'Notifikasi uji coba dikirim' : 'Gagal mengirim notifikasi');
+    } else if(perm==='denied'){
+      toast('Notifikasi diblokir — aktifkan manual lewat pengaturan browser/HP');
+    } else if(perm==='unsupported'){
+      toast('Browser ini tidak mendukung notifikasi');
+    } else {
+      const res = await requestNotifPermission();
+      if(res==='granted'){ toast('Notifikasi diaktifkan'); checkAndNotifyDuePlans(); }
+      refreshNotifStatus();
+    }
+  });
+  document.getElementById('btnSaveAi').addEventListener('click', ()=>{
+    saveAiSettings(document.getElementById('fld_aiKey').value.trim(), document.getElementById('fld_aiModel').value.trim());
+    toast('Pengaturan AI disimpan');
+  });
+}
+function refreshNotifStatus(){
+  const el = document.getElementById('notifStatusText'); if(!el) return;
+  const perm = notifPermission();
+  const map = { granted:'Aktif — ketuk untuk uji coba', denied:'Ditolak — aktifkan lewat pengaturan browser', default:'Belum diaktifkan — ketuk untuk aktifkan', unsupported:'Tidak didukung browser ini' };
+  el.textContent = map[perm] || perm;
 }
 
 /* ======================================================================
@@ -1752,6 +2349,8 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
   if(currentTab==='cycle' && currentCycleId){
     if(cycleDetailTab==='panen') openHarvestForm(currentCycleId);
     else if(cycleDetailTab==='catatan') openNoteForm(currentCycleId);
+    else if(cycleDetailTab==='rencana') openPlanForm(currentCycleId);
+    else if(cycleDetailTab==='diagnosa') openDiagnosisForm(currentCycleId);
     else openActivityForm(currentCycleId);
     return;
   }
@@ -1761,10 +2360,14 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
       <button class="btn btn-outline btn-block" id="qaField">+ Lahan Baru</button>
       <button class="btn btn-outline btn-block" id="qaCycle">+ Siklus Tanam Baru</button>
       <button class="btn btn-outline btn-block" id="qaProc">+ Pengadaan Baru</button>
+      <button class="btn btn-outline btn-block" id="qaPlan">+ Rencana Kegiatan</button>
+      <button class="btn btn-outline btn-block" id="qaDiag">+ Ajukan Masalah Tanaman</button>
     </div>`, [{label:'Batal', cls:'btn-ghost', onClick: closeSheet}]);
   document.getElementById('qaField').addEventListener('click', ()=>{ closeSheet(); openFieldForm(); });
   document.getElementById('qaCycle').addEventListener('click', ()=>{ closeSheet(); openCycleForm(); });
   document.getElementById('qaProc').addEventListener('click', ()=>{ closeSheet(); openProcurementForm(); });
+  document.getElementById('qaPlan').addEventListener('click', ()=>{ closeSheet(); openPlanForm(null); });
+  document.getElementById('qaDiag').addEventListener('click', ()=>{ closeSheet(); openDiagnosisForm(null); });
 });
 
 /* ======================================================================
@@ -1795,6 +2398,8 @@ if('serviceWorker' in navigator){
    ====================================================================== */
 load();
 switchTab('dashboard');
+checkAndNotifyDuePlans();
+updateBellBadge();
 
 })();
 </script>
