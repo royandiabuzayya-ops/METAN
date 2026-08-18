@@ -1,0 +1,32 @@
+{
+  "name": "Catatan Tani - Jurnal Pertanian",
+  "short_name": "Catatan Tani",
+  "description": "Catat setiap aktivitas pertanian dari olah lahan sampai panen, ketahui biaya produksi dan keuntungan sebenarnya.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1f3d2e",
+  "theme_color": "#1f3d2e",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
